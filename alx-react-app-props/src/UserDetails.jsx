@@ -1,9 +1,13 @@
 import { useContext } from 'react';
-import UserContext from './UserContext';
+import { UserContext } from './UserContext';
 
-export default function UserDetails() {
+function UserDetails() {
   const userData = useContext(UserContext);
-  if (!userData) return <p>No user data</p>;
+
+  if (!userData) {
+    return <p>No user data available</p>;
+  }
+
   return (
     <div>
       <p>Name: {userData.name}</p>
@@ -11,3 +15,5 @@ export default function UserDetails() {
     </div>
   );
 }
+
+export default UserDetails;
