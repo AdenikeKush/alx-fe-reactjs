@@ -1,6 +1,7 @@
 import './App.css';
 import ProfilePage from './ProfilePage';
-import { UserContext } from './components/UserContext';
+import UserProfile from './components/UserProfile';
+import UserContext from './components/UserContext';
 
 function App() {
   const userData = { name: 'Jane Doe', email: 'jane.doe@example.com' };
@@ -8,6 +9,7 @@ function App() {
   return (
     <UserContext.Provider value={userData}>
       <ProfilePage />
+      <UserProfile />
     </UserContext.Provider>
   );
 }
