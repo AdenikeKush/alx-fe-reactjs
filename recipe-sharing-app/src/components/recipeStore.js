@@ -8,10 +8,14 @@ export const useRecipeStore = create((set) => ({
   searchTerm: '',
   filteredRecipes: [],
 
+  // Favorites & recommendations
+  favorites: [],
+  recommendations: [],
+
+  // ----- Search / filter -----
   setSearchTerm: (term) =>
     set((state) => ({
       searchTerm: term,
-      // keep filteredRecipes in sync whenever search term changes
       filteredRecipes: state.recipes.filter((recipe) =>
         recipe.title.toLowerCase().includes(term.toLowerCase())
       ),
@@ -24,7 +28,31 @@ export const useRecipeStore = create((set) => ({
       ),
     })),
 
-  // Add recipe
+  // ----- Favorites -----
+  addFavorite: (recipeId) =>
+    set((state) => ({
+      favorites: state.favorites.includes(recipeId)
+        ? state.favorites
+        : [...state.favorites, recipeId],
+    })),
+
+  removeFavorite: (recipeId) =>
+    set((state) => ({
+      favorites: state.favorites.filter((id) => id !== recipeId),
+    })),
+
+  // ----- Recommendations (simple mock implementation) -----
+  generateRecommendations: () =>
+    set((state) => {
+      // Simple example: randomly pick some recipes that are in favorites
+      const recommended = state.recipes.filter(
+        (recipe) =>
+          state.favorites.includes(recipe.id) && Math.random() > 0.5
+      );
+      return { recommendations: recommended };
+    }),
+
+  // ----- CRUD for recipes -----
   addRecipe: (newRecipe) =>
     set((state) => {
       const updatedRecipes = [
@@ -35,7 +63,6 @@ export const useRecipeStore = create((set) => ({
         },
       ];
 
-      // if there is a search term, keep filtered list updated
       const updatedFiltered =
         state.searchTerm.trim() === ''
           ? updatedRecipes
@@ -51,7 +78,6 @@ export const useRecipeStore = create((set) => ({
       };
     }),
 
-  // Update recipe
   updateRecipe: (id, updatedFields) =>
     set((state) => {
       const updatedRecipes = state.recipes.map((recipe) =>
@@ -73,7 +99,6 @@ export const useRecipeStore = create((set) => ({
       };
     }),
 
-  // Delete recipe
   deleteRecipe: (id) =>
     set((state) => {
       const updatedRecipes = state.recipes.filter(
@@ -89,9 +114,14 @@ export const useRecipeStore = create((set) => ({
                 .includes(state.searchTerm.toLowerCase())
             );
 
+      const updatedFavorites = state.favorites.filter(
+        (favId) => favId !== id
+      );
+
       return {
         recipes: updatedRecipes,
         filteredRecipes: updatedFiltered,
+        favorites: updatedFavorites,
       };
     }),
 

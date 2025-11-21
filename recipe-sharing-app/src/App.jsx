@@ -4,6 +4,8 @@ import AddRecipeForm from './components/AddRecipeForm.jsx';
 import RecipeList from './components/RecipeList.jsx';
 import RecipeDetails from './components/RecipeDetails.jsx';
 import SearchBar from './components/SearchBar.jsx';
+import FavoritesList from './components/FavoritesList.jsx';
+import RecommendationsList from './components/RecommendationsList.jsx';
 
 const App = () => {
   return (
@@ -19,6 +21,10 @@ const App = () => {
                 <SearchBar />
                 <hr />
                 <RecipeList />
+                <hr />
+                <FavoritesList />
+                <hr />
+                <RecommendationsList />
               </>
             }
           />

@@ -5,12 +5,16 @@ import EditRecipeForm from './EditRecipeForm.jsx';
 import DeleteRecipeButton from './DeleteRecipeButton.jsx';
 
 const RecipeDetails = () => {
-  const { id } = useParams(); // recipe id from URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const recipe = useRecipeStore((state) =>
-    state.recipes.find((recipe) => recipe.id === id) // <-- recipe.id here
+    state.recipes.find((recipe) => recipe.id === id)
   );
+
+  const favorites = useRecipeStore((state) => state.favorites);
+  const addFavorite = useRecipeStore((state) => state.addFavorite);
+  const removeFavorite = useRecipeStore((state) => state.removeFavorite);
 
   if (!recipe) {
     return (
@@ -21,6 +25,16 @@ const RecipeDetails = () => {
     );
   }
 
+  const isFavorite = favorites.includes(recipe.id);
+
+  const handleToggleFavorite = () => {
+    if (isFavorite) {
+      removeFavorite(recipe.id);
+    } else {
+      addFavorite(recipe.id);
+    }
+  };
+
   return (
     <div>
       <button onClick={() => navigate('/')} style={{ marginBottom: '1rem' }}>
@@ -28,9 +42,17 @@ const RecipeDetails = () => {
       </button>
 
       <h1>{recipe.title}</h1>
-      {/* show id so recipe.id appears in JSX too */}
-      <p><strong>ID:</strong> {recipe.id}</p>
+      <p>
+        <strong>ID:</strong> {recipe.id}
+      </p>
       <p>{recipe.description}</p>
+
+      <button
+        onClick={handleToggleFavorite}
+        style={{ marginTop: '0.5rem', marginBottom: '1rem' }}
+      >
+        {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+      </button>
 
       <hr />
 
