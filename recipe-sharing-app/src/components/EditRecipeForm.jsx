@@ -1,47 +1,41 @@
 import { useState } from 'react';
 import { useRecipeStore } from './recipeStore';
 
-const AddRecipeForm = () => {
-  const addRecipe = useRecipeStore((state) => state.addRecipe);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+const EditRecipeForm = ({ recipe }) => {
+  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
+  const [title, setTitle] = useState(recipe.title);
+  const [description, setDescription] = useState(recipe.description);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) {
-      alert('Please fill in both title and description');
-      return;
-    }
+    if (!title.trim() || !description.trim()) return;
 
-    addRecipe({
-      id: Date.now(),
+    updateRecipe({
+      id: recipe.id,
       title: title.trim(),
       description: description.trim(),
     });
-
-    setTitle('');
-    setDescription('');
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
+    <form onSubmit={handleSubmit} style={{ marginTop: 8 }}>
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Recipe Title"
+        placeholder="Title"
         style={{ display: 'block', width: '100%', marginBottom: 10, padding: 8 }}
       />
       <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        placeholder="Recipe Description"
-        rows={3}
+        placeholder="Description"
+        rows={4}
         style={{ display: 'block', width: '100%', marginBottom: 10, padding: 8 }}
       />
-      <button type="submit">Add Recipe</button>
+      <button type="submit">Save Changes</button>
     </form>
   );
 };
 
-export default AddRecipeForm;
+export default EditRecipeForm;
