@@ -1,25 +1,32 @@
-// src/services/githubService.js
 import axios from "axios";
 
-// Basic user fetch by username (from previous task)
+const BASE_URL = import.meta.env.VITE_APP_GITHUB_API_URL || "https://api.github.com";
+
+// BASIC USER SEARCH
 export const fetchUserData = async (username) => {
-  const url = `https://api.github.com/users/${username}`;
-  const response = await axios.get(url);
-  return response.data;
+  try {
+    const response = await axios.get(`${BASE_URL}/users/${username}`);
+    return response.data;
+  } catch (error) {
+    return { error: true };
+  }
 };
 
-// ⭐ Advanced GitHub user search using multiple parameters
-export const searchAdvancedUsers = async ({ username, location, minRepos }) => {
-  let query = "";
+// ADVANCED USER SEARCH
+export const fetchAdvancedUsers = async (username, location, minRepos) => {
+  try {
+    let query = "";
 
-  if (username) query += `${username} in:login `;
-  if (location) query += `location:${location} `;
-  if (minRepos) query += `repos:>${minRepos} `;
+    if (username) query += `${username} in:login `;
+    if (location) query += `location:${location} `;
+    if (minRepos) query += `repos:>${minRepos}`;
 
-  const url = `https://api.github.com/search/users?q=${encodeURIComponent(
-    query
-  )}`;
+    const response = await axios.get(
+      `${BASE_URL}/search/users?q=${encodeURIComponent(query)}`
+    );
 
-  const response = await axios.get(url);
-  return response.data; // contains { total_count, items: [...] }
+    return response.data;
+  } catch (error) {
+    return { items: [] };
+  }
 };
