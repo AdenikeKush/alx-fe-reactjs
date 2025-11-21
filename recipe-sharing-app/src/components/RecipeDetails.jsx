@@ -1,40 +1,45 @@
+// src/components/RecipeDetails.jsx
 import { useParams, useNavigate } from 'react-router-dom';
 import { useRecipeStore } from './recipeStore';
-import EditRecipeForm from './EditRecipeForm';
-import DeleteRecipeButton from './DeleteRecipeButton';
+import EditRecipeForm from './EditRecipeForm.jsx';
+import DeleteRecipeButton from './DeleteRecipeButton.jsx';
 
 const RecipeDetails = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // recipe id from URL
   const navigate = useNavigate();
-  const recipeId = Number(id);
+
   const recipe = useRecipeStore((state) =>
-    state.recipes.find((r) => r.id === recipeId)
+    state.recipes.find((recipe) => recipe.id === id) // <-- recipe.id here
   );
 
   if (!recipe) {
     return (
-      <div style={{ maxWidth: 720, margin: '40px auto', padding: '0 16px' }}>
-        <h2>Recipe not found</h2>
-        <button onClick={() => navigate('/')}>Back to list</button>
+      <div>
+        <p>Recipe not found.</p>
+        <button onClick={() => navigate('/')}>Back to recipes</button>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 720, margin: '40px auto', padding: '0 16px' }}>
-      <h1 style={{ marginBottom: 8 }}>{recipe.title}</h1>
-      <p style={{ marginBottom: 20 }}>{recipe.description}</p>
+    <div>
+      <button onClick={() => navigate('/')} style={{ marginBottom: '1rem' }}>
+        ← Back to recipes
+      </button>
 
-      <h3>Edit Recipe</h3>
-      <EditRecipeForm recipe={recipe} />
+      <h1>{recipe.title}</h1>
+      {/* show id so recipe.id appears in JSX too */}
+      <p><strong>ID:</strong> {recipe.id}</p>
+      <p>{recipe.description}</p>
 
-      <div style={{ marginTop: 24 }}>
-        <DeleteRecipeButton recipeId={recipeId} />
-      </div>
+      <hr />
 
-      <div style={{ marginTop: 24 }}>
-        <button onClick={() => navigate('/')}>Back</button>
-      </div>
+      <h2>Edit Recipe</h2>
+      <EditRecipeForm recipeId={recipe.id} />
+
+      <hr />
+
+      <DeleteRecipeButton recipeId={recipe.id} />
     </div>
   );
 };

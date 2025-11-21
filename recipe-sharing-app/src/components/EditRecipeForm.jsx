@@ -1,39 +1,57 @@
 import { useState } from 'react';
 import { useRecipeStore } from './recipeStore';
 
-const EditRecipeForm = ({ recipe }) => {
-  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
-  const [title, setTitle] = useState(recipe.title);
-  const [description, setDescription] = useState(recipe.description);
+const EditRecipeForm = ({ recipeId }) => {
+  const recipe = useRecipeStore((state) =>
+    state.recipes.find((recipe) => recipe.id === recipeId)
+  );
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
+
+  const [title, setTitle] = useState(recipe?.title || '');
+  const [description, setDescription] = useState(recipe?.description || '');
+
+  if (!recipe) {
+    return <p>Recipe not found.</p>;
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
     if (!title.trim() || !description.trim()) return;
 
-    updateRecipe({
-      id: recipe.id,
+    updateRecipe(recipeId, {
       title: title.trim(),
       description: description.trim(),
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: 8 }}>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
-        style={{ display: 'block', width: '100%', marginBottom: 10, padding: 8 }}
-      />
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Description"
-        rows={4}
-        style={{ display: 'block', width: '100%', marginBottom: 10, padding: 8 }}
-      />
-      <button type="submit">Save Changes</button>
+    <form onSubmit={handleSubmit} style={{ marginTop: '1rem' }}>
+      <div style={{ marginBottom: '0.5rem' }}>
+        <label htmlFor={`edit-title-${recipeId}`}>Title</label>
+        <br />
+        <input
+          id={`edit-title-${recipeId}`}
+          type="text"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          required
+        />
+      </div>
+
+      <div style={{ marginBottom: '0.5rem' }}>
+        <label htmlFor={`edit-description-${recipeId}`}>Description</label>
+        <br />
+        <textarea
+          id={`edit-description-${recipeId}`}
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+          required
+        />
+      </div>
+
+      <button type="submit">Save changes</button>
     </form>
   );
 };
