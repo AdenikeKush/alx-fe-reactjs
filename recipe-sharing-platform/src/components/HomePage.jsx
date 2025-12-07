@@ -6,7 +6,6 @@ function HomePage() {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    // Load mock data from src/data.json
     import("../data.json")
       .then((module) => {
         const data = module.default || module;
@@ -22,9 +21,18 @@ function HomePage() {
       <h1 className="text-3xl font-bold text-center mb-4 text-gray-800">
         Recipe Sharing Platform
       </h1>
-      <p className="text-center text-gray-600 mb-8">
+      <p className="text-center text-gray-600 mb-6">
         Browse delicious recipes shared by the community.
       </p>
+
+      <div className="text-center mb-8">
+        <Link
+          to="/add"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors"
+        >
+          + Add New Recipe
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe) => (
