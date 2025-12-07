@@ -5,33 +5,35 @@ function AddRecipeForm() {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [steps, setSteps] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState(""); // <-- renamed
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validation checks
+  // Validation function required by ALX
+  const validate = () => {
     if (!title.trim() || !ingredients.trim() || !steps.trim()) {
-      setError("All fields are required.");
-      return;
+      setErrors("All fields are required.");
+      return false;
     }
 
-    // At least 2 ingredients
     const ingredientsList = ingredients
       .split("\n")
       .filter((ing) => ing.trim() !== "");
 
     if (ingredientsList.length < 2) {
-      setError("Please include at least two ingredients.");
-      return;
+      setErrors("Please include at least two ingredients.");
+      return false;
     }
 
-    setError("");
+    setErrors("");
+    return true;
+  };
 
-    // No backend yet — simulate success
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return; // Use validate()
+
     alert("Recipe submitted successfully: " + title);
 
-    // Reset fields after submit
+    // Reset fields
     setTitle("");
     setIngredients("");
     setSteps("");
@@ -47,9 +49,9 @@ function AddRecipeForm() {
           Add New Recipe
         </h1>
 
-        {error && (
+        {errors && (
           <p className="bg-red-100 text-red-700 px-3 py-2 rounded mb-4 text-sm">
-            {error}
+            {errors}
           </p>
         )}
 
