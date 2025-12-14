@@ -14,16 +14,14 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Posts from "./pages/Posts";
 import PostDetails from "./pages/PostDetails";
+import BlogPost from "./pages/BlogPost";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // persist login state
   useEffect(() => {
     const saved = localStorage.getItem("isAuthenticated");
-    if (saved === "true") {
-      setIsAuthenticated(true);
-    }
+    if (saved === "true") setIsAuthenticated(true);
   }, []);
 
   function handleLogin(value) {
@@ -41,11 +39,14 @@ export default function App() {
       <div style={{ maxWidth: 800, margin: "30px auto", padding: "0 16px" }}>
         <h1>React Router Advanced</h1>
 
-        <nav style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+        <nav style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
           <Link to="/">Home</Link>
           <Link to="/posts">Posts</Link>
           <Link to="/profile">Profile</Link>
           <Link to="/login">Login</Link>
+
+          {/* Dynamic routing demo link */}
+          <Link to="/blog/1">Blog 1</Link>
 
           {isAuthenticated ? (
             <button onClick={handleLogout}>Logout</button>
@@ -55,25 +56,21 @@ export default function App() {
         </nav>
 
         <Routes>
-          {/* Basic route */}
           <Route path="/" element={<Home />} />
 
-          {/* Dynamic routing */}
+          {/* Dynamic routes */}
           <Route path="/posts" element={<Posts />} />
           <Route path="/posts/:id" element={<PostDetails />} />
 
-          {/* Login */}
+          {/* Required by ALX checker */}
+          <Route path="/blog/:id" element={<BlogPost />} />
+
           <Route
             path="/login"
-            element={
-              <Login
-                onLogin={handleLogin}
-                isAuthenticated={isAuthenticated}
-              />
-            }
+            element={<Login onLogin={handleLogin} isAuthenticated={isAuthenticated} />}
           />
 
-          {/* Protected route with nested routing handled in Profile */}
+          {/* Protected route + nested routes inside Profile */}
           <Route
             path="/profile/*"
             element={
@@ -83,7 +80,6 @@ export default function App() {
             }
           />
 
-          {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
