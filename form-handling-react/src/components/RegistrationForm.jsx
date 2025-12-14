@@ -9,9 +9,17 @@ export default function RegistrationForm() {
   function validate() {
     const newErrors = {};
 
-    if (!username.trim()) newErrors.username = "Username is required";
-    if (!email.trim()) newErrors.email = "Email is required";
-    if (!password.trim()) newErrors.password = "Password is required";
+    if (!username) {
+      newErrors.username = "Username is required";
+    }
+
+    if (!email) {
+      newErrors.email = "Email is required";
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+    }
 
     return newErrors;
   }
@@ -26,7 +34,6 @@ export default function RegistrationForm() {
       return;
     }
 
-    // Mock API simulation
     fetch("https://jsonplaceholder.typicode.com/posts", {
       method: "POST",
       headers: {
@@ -37,7 +44,6 @@ export default function RegistrationForm() {
 
     console.log("Form submitted:", { username, email, password });
 
-    // Reset form
     setUsername("");
     setEmail("");
     setPassword("");
