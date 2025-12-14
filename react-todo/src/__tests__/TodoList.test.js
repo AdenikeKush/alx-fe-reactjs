@@ -1,10 +1,13 @@
+cd ~/alx-fe-reactjs/react-todo
+
+cat > src/__tests__/TodoList.test.js <<'EOF'
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import TodoList from "../TodoList";
 
-describe("TodoList testing component", () => {
-  it("should render the TodoList component with initial todos", () => {
+describe("TodoList", () => {
+  test("renders TodoList and initial demo todos", () => {
     render(<TodoList />);
 
     expect(screen.getByText("Todo List")).toBeInTheDocument();
@@ -13,19 +16,41 @@ describe("TodoList testing component", () => {
     expect(screen.getByText("Build a Todo component")).toBeInTheDocument();
   });
 
-  it("should add a new todo item", () => {
+  test("adds a new todo", () => {
     render(<TodoList />);
 
     const input = screen.getByLabelText("todo-input");
     const addButton = screen.getByText("Add");
 
     fireEvent.change(input, { target: { value: "New Todo Item" } });
-    fireEvent.submit(addButton.closest("form"));
+    fireEvent.click(addButton);
 
     expect(screen.getByText("New Todo Item")).toBeInTheDocument();
   });
 
-  it("should toggle a todo item completion status", () => {
+  test("toggles a todo completion status", () => {
     render(<TodoList />);
 
-    const todo
+    const todo = screen.getByText("Learn React Testing Library");
+    expect(todo).toHaveStyle("text-decoration: none");
+
+    fireEvent.click(todo);
+    expect(todo).toHaveStyle("text-decoration: line-through");
+
+    fireEvent.click(todo);
+    expect(todo).toHaveStyle("text-decoration: none");
+  });
+
+  test("deletes a todo item", () => {
+    render(<TodoList />);
+
+    const todoText = "Build a Todo component";
+    expect(screen.getByText(todoText)).toBeInTheDocument();
+
+    const deleteButton = screen.getByLabelText(`delete-${todoText}`);
+    fireEvent.click(deleteButton);
+
+    expect(screen.queryByText(todoText)).not.toBeInTheDocument();
+  });
+});
+EOF
