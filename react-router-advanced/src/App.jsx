@@ -8,49 +8,49 @@ import {
 } from "react-router-dom";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./components/Profile";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Profile from "./components/Profile";
-import ProfileDetails from "./pages/ProfileDetails";
-import ProfileSettings from "./pages/ProfileSettings";
 import Posts from "./pages/Posts";
 import PostDetails from "./pages/PostDetails";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // simple persistence so refresh doesn't log you out
+  // persist login state
   useEffect(() => {
     const saved = localStorage.getItem("isAuthenticated");
-    if (saved === "true") setIsAuthenticated(true);
+    if (saved === "true") {
+      setIsAuthenticated(true);
+    }
   }, []);
 
-  function onLogin(value) {
+  function handleLogin(value) {
     setIsAuthenticated(value);
     localStorage.setItem("isAuthenticated", String(value));
   }
 
-  function onLogout() {
+  function handleLogout() {
     setIsAuthenticated(false);
     localStorage.setItem("isAuthenticated", "false");
   }
 
   return (
     <BrowserRouter>
-      <div style={{ maxWidth: 800, margin: "30px auto", padding: "0 16px", fontFamily: "Arial, sans-serif" }}>
+      <div style={{ maxWidth: 800, margin: "30px auto", padding: "0 16px" }}>
         <h1>React Router Advanced</h1>
 
-        <nav style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+        <nav style={{ display: "flex", gap: 12, marginBottom: 16 }}>
           <Link to="/">Home</Link>
           <Link to="/posts">Posts</Link>
           <Link to="/profile">Profile</Link>
           <Link to="/login">Login</Link>
 
           {isAuthenticated ? (
-            <button onClick={onLogout}>Logout</button>
+            <button onClick={handleLogout}>Logout</button>
           ) : (
-            <span style={{ opacity: 0.7 }}>Not logged in</span>
+            <span>Not logged in</span>
           )}
         </nav>
 
@@ -58,33 +58,33 @@ export default function App() {
           {/* Basic route */}
           <Route path="/" element={<Home />} />
 
-          {/* Dynamic route example */}
+          {/* Dynamic routing */}
           <Route path="/posts" element={<Posts />} />
           <Route path="/posts/:id" element={<PostDetails />} />
 
           {/* Login */}
           <Route
             path="/login"
-            element={<Login onLogin={onLogin} isAuthenticated={isAuthenticated} />}
+            element={
+              <Login
+                onLogin={handleLogin}
+                isAuthenticated={isAuthenticated}
+              />
+            }
           />
 
-          {/* Protected route + nested routes */}
+          {/* Protected route with nested routing handled in Profile */}
           <Route
-            path="/profile"
+            path="/profile/*"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <Profile />
               </ProtectedRoute>
             }
-          >
-            {/* default nested route */}
-            <Route index element={<Navigate to="details" replace />} />
-            <Route path="details" element={<ProfileDetails />} />
-            <Route path="settings" element={<ProfileSettings />} />
-          </Route>
+          />
 
           {/* Fallback */}
-          <Route path="*" element={<p>404 - Page not found</p>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </BrowserRouter>
