@@ -1,10 +1,10 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import TodoList from "../components/TodoList";
+import TodoList from "../TodoList";
 
-describe("TodoList Component Tests", () => {
-  test("renders TodoList and initial todos", () => {
+describe("TodoList", () => {
+  test("renders TodoList and initial demo todos", () => {
     render(<TodoList />);
 
     expect(screen.getByText("Todo List")).toBeInTheDocument();
@@ -17,10 +17,10 @@ describe("TodoList Component Tests", () => {
     render(<TodoList />);
 
     const input = screen.getByLabelText("todo-input");
-    const button = screen.getByText("Add");
+    const addButton = screen.getByText("Add");
 
     fireEvent.change(input, { target: { value: "New Todo" } });
-    fireEvent.click(button);
+    fireEvent.click(addButton);
 
     expect(screen.getByText("New Todo")).toBeInTheDocument();
   });
@@ -29,8 +29,6 @@ describe("TodoList Component Tests", () => {
     render(<TodoList />);
 
     const todo = screen.getByText("Learn React Testing Library");
-
-    // initially not completed
     expect(todo).toHaveStyle("text-decoration: none");
 
     fireEvent.click(todo);
@@ -46,8 +44,7 @@ describe("TodoList Component Tests", () => {
     const todoText = "Build a Todo component";
     expect(screen.getByText(todoText)).toBeInTheDocument();
 
-    // delete button next to that todo
-    const deleteButton = screen.getByLabelText("delete-Build a Todo component");
+    const deleteButton = screen.getByLabelText(`delete-${todoText}`);
     fireEvent.click(deleteButton);
 
     expect(screen.queryByText(todoText)).not.toBeInTheDocument();
